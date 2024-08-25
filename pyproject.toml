@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[project]
+name = "soundcharts-py"
+version = "0.0.1"
+authors = [
+    { name="AidanAlr", email="aidanalrawi@icloud.com" },
+]
+description = "A wrapper package for the paid api from soundcharts"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/AidanAlr/soundcharts-py"
+Issues = "https://github.com/AidanAlr/soundcharts-py/issues"
