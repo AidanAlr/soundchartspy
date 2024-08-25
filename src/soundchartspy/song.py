@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 class Song(SimpleNamespace):
 
-    def __repr__(self):
+    def __str__(self):
         return f"Song({self.get_name()} by {self.get_main_artist_name()})"
 
     def __dict__(self):
