@@ -94,3 +94,4 @@ class Song(SimpleNamespace):
 
     def get_audio_features(self):
         return self.audio
+

@@ -2,8 +2,8 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 [project]
-name = "soundcharts-py"
-version = "0.0.1"
+name = "soundchartspy"
+version = "0.0.2.1"
 authors = [
     { name="AidanAlr", email="aidanalrawi@icloud.com" },
 ]
@@ -17,5 +17,5 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/AidanAlr/soundcharts-py"
-Issues = "https://github.com/AidanAlr/soundcharts-py/issues"
+Homepage = "https://github.com/AidanAlr/soundchartspy"
+Issues = "https://github.com/AidanAlr/soundchartspy/issues"
