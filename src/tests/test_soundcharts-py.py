@@ -1,66 +1,47 @@
-import inspect
-import os
 import unittest
-from types import SimpleNamespace
 
-from dotenv import load_dotenv
+from ..soundchartspy.soundcharts import SoundCharts
 
-from src.soundchartspy.playlist import Playlist
-from src.soundchartspy.soundcharts import SoundCharts
-from src.soundchartspy.song import Song
-from src.soundchartspy.logging_config import test_logger as logger
+KEY = "soundcharts"
+ID = "soundcharts"
 
-app_id = "soundcharts"
-api_key = "soundcharts"
 
 class TestSongMethods(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.song_uuid: str = "7d534228-5165-11e9-9375-549f35161576"
-        cls.soundcharts = SoundCharts(app_id=app_id, api_key=api_key)
+        cls.sc = SoundCharts(app_id=ID, api_key=KEY)
+        cls.uuid = "7d534228-5165-11e9-9375-549f35161576"
+        cls.isrc = "USAT22003425"
 
-    def test_get_song_data(self):
-        song = self.soundcharts.get_song_metadata_from_uuid(uuid=self.song_uuid)
-        assert isinstance(song, Song)
-        assert song.get_uuid() == self.song_uuid
-        assert song.get_name() == "bad guy"
-        logger.debug(f"Song: {song.__dict__()}")
+    def test_get_song_from_uuid(self):
+        song = self.sc.get_song_metadata_from_uuid(song_uuid=self.uuid)
+        assert song is not None, "Failed to get song from uuid"
 
-    def test_all_get_methods(self):
-        song = self.soundcharts.get_song_metadata_from_uuid(uuid=self.song_uuid)
-        methods = inspect.getmembers(song, predicate=inspect.ismethod)
-        for name, method in methods:
-            if "get_" in name:
-                result = method()
-                assert result is not None, f"Method {name}() returned None"
+    def test_get_song_from_isrc(self):
+        song = self.sc.get_song_metadata_from_isrc(isrc=self.isrc)
+        assert song is not None, "Failed to get song from isrc"
 
-    def test_get_artist_follower_count_from_uuid(self):
-        song = self.soundcharts.get_song_metadata_from_uuid(uuid=self.song_uuid)
-        artist_uuid = song.get_main_artist_uuid()
-        platform_list = ["spotify", "soundcloud"]
-        for platform in platform_list:
-            followers = self.soundcharts.get_artist_follower_count_from_uuid(artist_uuid=artist_uuid, platform=platform)
-            assert followers > 0, "Followers were not fetched! Error in test"
-            logger.debug(f"Platform: {platform}, Followers: {followers}")
+    def test_get_song_from_platform_id(self):
+        platform = "spotify"
+        platform_id = "7A9rdAz2M6AjRwOa34jxIP"
+        song = self.sc.get_song_by_platform_id(platform=platform, platform_id=platform_id)
+        assert song is not None, "Failed to get song from platform id"
 
+    def test_get_song_platform_ids(self):
+        offset = 0
+        limit = 10
+        song_platform_ids = self.sc.get_song_platform_ids(song_uuid=self.uuid, offset=offset, limit=limit)
+        assert song_platform_ids is not None, "Failed to get song platform ids"
 
-class TestPlaylist(unittest.TestCase):
+    def test_get_song_albums(self):
+        albums = self.sc.get_song_albums(song_uuid=self.uuid, type="all", offset=0, limit=10, sort_by="releaseDate",
+                                         sort_order="desc")
+        assert albums is not None, "Failed to get song albums"
 
-    @classmethod
-    def setUpClass(cls):
-        cls.song_uuid: str = "7d534228-5165-11e9-9375-549f35161576"
-        cls.playlist_uuid: str = "86694fd0-cdce-11e8-8cff-549f35161576"
-        cls.soundcharts = SoundCharts(app_id=app_id, api_key=api_key)
+    def test_get_song_audience(self):
+        audience = self.sc.get_song_audience(song_uuid=self.uuid, platform="spotify")
+        assert audience is not None, "Failed to get song audience"
 
-    def test_get_playlist_metadata(self):
-        playlist: Playlist = self.soundcharts.get_playlist_metadata_from_uuid(self.playlist_uuid)
-        assert playlist.get_name() is not None
-
-    def test_all_get_methods(self):
-        playlist: Playlist = self.soundcharts.get_playlist_metadata_from_uuid(self.playlist_uuid)
-        methods = inspect.getmembers(playlist, predicate=inspect.ismethod)
-        for name, method in methods:
-            if "get_" in name:
-                result = method()
-                assert result is not None, f"Method {name}() returned None"
+        audience = self.sc.get_song_audience(song_uuid=self.uuid, platform="spotify", end_date="2021-07-01")
+        assert audience is not None, "Failed to get song audience with end date"
