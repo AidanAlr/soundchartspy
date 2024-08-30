@@ -1,6 +1,6 @@
 import unittest
 
-from ..soundchartspy.soundcharts import SoundCharts
+from sounchartspy.soundchartspy.soundcharts import SoundCharts
 
 KEY = "soundcharts"
 ID = "soundcharts"
@@ -45,3 +45,9 @@ class TestSongMethods(unittest.TestCase):
 
         audience = self.sc.get_song_audience(song_uuid=self.uuid, platform="spotify", end_date="2021-07-01")
         assert audience is not None, "Failed to get song audience with end date"
+
+    def test_get_artist_follower_count_from_uuid(self):
+        artist_uuid = "11e81bcc-9c1c-ce38-b96b-a0369fe50396"
+        platform = "spotify"
+        follower_count = self.sc.get_artist_follower_count_from_uuid(artist_uuid=artist_uuid, platform=platform)
+        assert follower_count is not None, "Failed to get artist follower count"

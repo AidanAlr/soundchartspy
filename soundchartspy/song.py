@@ -21,7 +21,7 @@ class Song(SimpleNamespace):
             "duration": self.get_duration(),
             "root_genres": self.get_root_genres(),
             "sub_genres": self.get_sub_genres(),
-            "composers": self.get_comosers(),
+            "composers": self.get_composers(),
             "producers": self.get_producers(),
             "labels": self.get_labels(),
             "audio_features": self.get_audio_features()
@@ -63,35 +63,38 @@ class Song(SimpleNamespace):
     def get_main_artist_image_url(self):
         return self.get_artists_list()[0].get("imageUrl")
 
-    def get_release_date(self):
+    def get_release_date(self) -> str:
         return self.releaseDate
 
-    def get_copy_right(self):
+    def get_copy_right(self) -> str:
         return self.copyright
 
-    def get_duration(self):
+    def get_duration(self) -> str:
         return self.duration
 
-    def get_root_genres(self):
+    def get_root_genres(self) -> list:
         genres = self.genres
         root_genres = [item.get("root") for item in genres]
         return root_genres
 
-    def get_sub_genres(self):
+    def get_sub_genres(self) -> list:
         genres = self.genres
         sub_genres = [item.get("sub") for item in genres]
         sub_genres = [item for sublist in sub_genres for item in sublist]
         return sub_genres
 
-    def get_comosers(self):
+    def get_composers(self) -> list:
         return self.composers
 
-    def get_producers(self):
+    def get_producers(self) -> list:
         return self.producers
 
-    def get_labels(self):
+    def get_labels(self) -> list[dict, dict, ...]:
         return self.labels
 
     def get_audio_features(self):
         return self.audio
+
+    def get_app_url(self):
+        return self.appUrl
 

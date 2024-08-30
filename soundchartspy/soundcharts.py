@@ -3,10 +3,10 @@ import requests
 import os
 
 from .album import Album
-from .error import SoundChartsError
 from .playlist import Playlist
 from .song import Song
 from .logging_config import main_logger as logger
+from .error import SoundChartsError
 
 
 def get_soundcharts_error_code_message(response: dict):
@@ -17,10 +17,12 @@ def get_soundcharts_error_code_message(response: dict):
 
 
 def check_response_for_errors(response: dict):
+
     if response.get("errors"):
         code, message = get_soundcharts_error_code_message(response=response)
         output_message = f"SoundCharts Error {code} - {message}"
         raise SoundChartsError(output_message)
+
     return response
 
 
@@ -54,6 +56,7 @@ class SoundCharts:
             return response_dict
         except SoundChartsError as e:
             logger.error(f"{e}")
+            raise e
 
     # Artist methods
     def get_artist_follower_count_from_uuid(self, artist_uuid: str, platform: str) -> int:
@@ -63,11 +66,10 @@ class SoundCharts:
         :param platform:
         :return follower_count:
         """
-        response: dict = self.make_api_request("/v2/artist/{}/{}/"
+        response: dict = self.make_api_request("/v2/artist/{}/audience/{}/"
                                                .format(artist_uuid, platform))
         items = response.get("items")
-        main_artist = items[0]
-        follower_count = main_artist["followerCount"]
+        follower_count = items[0]["followerCount"]
         return follower_count
 
     # Playlist Methods
@@ -163,7 +165,7 @@ class SoundCharts:
         return albums
 
     def get_song_audience(self, song_uuid: str, platform: str, start_date: str = None, end_date: str = None,
-                          identifier: str = None):
+                          identifier: str = None) -> list[dict]:
         """
         Returns a list of dictionaries containing audience data for a song on a given platform.
         :param song_uuid: The UUID of the song.
@@ -171,16 +173,41 @@ class SoundCharts:
         :param start_date: Date in the format "YYYY-MM-DD"
         :param end_date: Date in the format "YYYY-MM-DD"
         :param identifier: An optional identifier for the song on the platform.
-        :return:
+        :return output: A list of dictionaries containing audience data.
+        Example output:
+        [
+            {
+                "platform": "spotify",
+                "audience": "monthly",
+                "date": "2021-07-01",
+                "identifier": "6f3e3c6f-7f0b-4f7e-8b3d-3f0e2f0f9b3d",
+                "value": 0
+            },
+            {
+                "platform": "spotify",
+                "audience": "monthly",
+                "date": "2021-07-02",
+                "identifier": "6f3e3c6f-7f0b-4f7e-8b3d-3f0e2f0f9b3d",
+                "value": 0
+            }
+        ]
         """
         url = "/v2/song/{}/audience/{}?".format(song_uuid, platform)
 
         if start_date:
             url += "startDate={}".format(start_date)
+
         if end_date:
-            url += "&endDate={}".format(end_date)
+            if start_date:
+                url += "&"
+
+            url += "endDate={}".format(end_date)
+
         if identifier:
-            url += "&identifier={}".format(identifier)
+            if start_date or end_date:
+                url += "&"
+
+            url += "identifier={}".format(identifier)
 
         response: dict = self.make_api_request(url)
         items = response.get("items")
@@ -201,3 +228,5 @@ class SoundCharts:
             output.append(new_dict)
 
         return output
+
+

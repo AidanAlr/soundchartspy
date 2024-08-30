@@ -3,11 +3,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 [project]
 name = "soundchartspy"
-version = "0.0.2.1"
+version = "0.1.0"
 authors = [
     { name="AidanAlr", email="aidanalrawi@icloud.com" },
 ]
-description = "A wrapper package for the paid api from soundcharts"
+description = "A python wrapper package for the paid api from soundcharts. This package is not affiliated with soundcharts and is not endorsed by them. However, it is built upon their api and can be used assuming you have a paid subscription to their service."
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
@@ -15,7 +15,13 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-
 [project.urls]
 Homepage = "https://github.com/AidanAlr/soundchartspy"
 Issues = "https://github.com/AidanAlr/soundchartspy/issues"
+[tool.hatch.build.targets.wheel]
+exclude = [
+    ".venv",
+    "tests/",
+    ".env",
+    ".gitignore"
+]
