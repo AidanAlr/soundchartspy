@@ -5,10 +5,10 @@ build-backend = "hatchling.build"
 name = "soundchartspy"
 version = "0.0.1"
 authors = [
-    { name="AidanAlr", email="aidanalrawi@icloud.com" },
+    { name = "AidanAlr", email = "aidanalrawi@icloud.com" },
 ]
 description = "A python wrapper package for the paid api from SoundCharts. This package is not affiliated with soundcharts and is not endorsed by them. However, it is built upon their api and can be used assuming you have a paid subscription to their service."
-readme = "README.md"
+readme = "README.rst"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
