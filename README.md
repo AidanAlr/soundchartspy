@@ -1,6 +1,6 @@
 # Sounchartspy
 
-A python wrapper for the [Soundcharts API](https://www.soundcharts.com/api/docs).
+A python wrapper for the [Soundcharts API](https://doc.api.soundcharts.com/api/v2/doc).
 
 ## Installation
 
@@ -10,26 +10,22 @@ pip install soundchartspy
 
 ## Example Usage
 
-Get the metadata of a song using its uuid.
-
 ```python
-from soundchartspy import Soundcharts
+from soundchartspy.client import SoundCharts
+from soundchartspy.data import Song, Album
 
-sc = Soundcharts(api_key='your_api_key', app_id='your_app_id')
-song = sc.get_song_metadata_from_uuid('song_uuid')
+# Initialize the SoundCharts client
+sc = SoundCharts(api_key='your_api_key', app_id='your_app_id')
 
-print(song.get_name())
-print(song.get_main_artist_name())
-print(song.get_release_date())
-```
+# Get the song by uuid
+song: Song = sc.song(song_uuid='7d534228-5165-11e9-9375-549f35161576')
+print("Song Name: {}, Artists: {}".format(song.name, song.artists))
 
-Get the song audience on spotify.
+# Get the song audience on spotify.
+audience_data: dict = sc.song_audience(song.uuid, 'spotify')
+print("Spotify Audience: {}".format(audience_data))
 
-```python
-from soundchartspy import Soundcharts
-
-sc = Soundcharts(api_key='your_api_key', app_id='your_app_id')
-audience_data: list[dict] = sc.get_song_audience('song_uuid', 'spotify')
-for data in audience_data:
-    print("Date: {}, Metric Value:{}".format(data.get('date'), data.get('value')) 
+# Get the song albums
+albums: list[Album] = sc.song_albums(song.uuid)
+print("Albums: {}".format(albums))
 ```
