@@ -6,6 +6,10 @@
    :target: https://pypi.org/project/soundchartspy/
    :alt: PyPI Version
 
+.. image:: https://img.shields.io/pypi/dm/soundchartspy
+   :target: https://pypi.org/project/soundchartspy/
+   :alt: PyPI Downloads
+
 .. image:: https://github.com/AidanAlr/soundchartspy/actions/workflows/ci.yml/badge.svg
    :target: https://github.com/AidanAlr/soundchartspy/actions/workflows/ci.yml
    :alt: Build Status
@@ -28,7 +32,9 @@ Make sure to set up your API key and app ID in order to access the SoundCharts A
 
 About
 =====
-`soundchartspy` Python wrapper enabling easier pythonic interaction with the SoundCharts API. [SoundCharts API](https://doc.api.soundcharts.com/api/v2/doc). It provides an easy interface to interact with the SoundCharts API, allowing you to retrieve data about songs, artists, and more. This package is not affiliated with or endorsed by SoundCharts, though an active SoundCharts API subscription is required.
+`soundchartspy` is a wrapper package enabling easier pythonic interaction with the SoundCharts API (`SoundCharts API documentation <https://doc.api.soundcharts.com/api/v2/doc>`_).
+It provides an easy interface to retrieve data about songs, artists, charts and more.
+This package is not affiliated with or endorsed by SoundCharts, though an active SoundCharts API subscription is required to use the package.
 
 For detailed information, consult the documentation hosted on Read the Docs.
 
@@ -73,7 +79,3 @@ Contributing
 #. Submit your pull request for review.
 
 Please do not update the library version in `CHANGELOG.rst` or `soundchartspy/__init__.py`. The maintainer will handle this during release.
-
-History
-=======
-This repository is maintained as a standalone project created to simplify interactions with the SoundCharts API. It was first released on PyPI in 2024.
