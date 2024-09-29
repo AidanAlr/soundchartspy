@@ -28,9 +28,9 @@ Make sure to set up your API key and app ID in order to access the SoundCharts A
 
 About
 =====
-`soundchartspy` is a Python wrapper for the [SoundCharts API](https://doc.api.soundcharts.com/api/v2/doc). It provides an easy interface to interact with the SoundCharts API, allowing you to retrieve data about songs, artists, and more. This package is not affiliated with or endorsed by SoundCharts but requires a paid subscription to use.
+`soundchartspy` Python wrapper enabling easier pythonic interaction with the SoundCharts API. [SoundCharts API](https://doc.api.soundcharts.com/api/v2/doc). It provides an easy interface to interact with the SoundCharts API, allowing you to retrieve data about songs, artists, and more. This package is not affiliated with or endorsed by SoundCharts, though an active SoundCharts API subscription is required.
 
-`soundchartspy` supports Python 3.8+ and works across multiple operating systems. For detailed information, consult the documentation hosted on Read the Docs.
+For detailed information, consult the documentation hosted on Read the Docs.
 
 Documentation
 =============
