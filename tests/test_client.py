@@ -26,3 +26,17 @@ class TestSongMethods(unittest.TestCase):
     def test_get_song_by_platform_id(self):
         song = self.sc.song_by_platform_id(platform=self.platform, identifier=self.spotify_identifier)
         assert song is not None, "Failed to get song from platform id"
+
+    def test_get_song_ids(self):
+        song_ids = self.sc.song_ids(uuid=self.demo_song_uuid, platform=self.platform)
+        assert song_ids is not None, "Failed to get song ids"
+
+    def test_get_song_albums(self):
+        albums = self.sc.song_albums(uuid=self.demo_song_uuid)
+        assert albums is not None, "Failed to get song albums"
+
+    def test_song_audience(self):
+        platforms = ["spotify"]
+        for platform in platforms:
+            audience = self.sc.song_audience(uuid=self.demo_song_uuid, platform=platform)
+            assert audience is not None, "Failed to get song audience"

@@ -4,12 +4,13 @@ from soundchartspy.data import Label, Genre, Artist, ISRC, Audio, Song
 from soundchartspy.exceptions import SoundChartsError
 
 
-def convert_song_response_to_object(response_object: dict) -> Song:
+def convert_song_response_to_object(response: dict) -> Song:
     """
-    Takes a response object from SoundCharts and extracts the attributes for a song object.
-    :param response_object:
-    :return:
+    Takes a response containing song object data from SoundCharts and extracts the attributes for a song object.
+    :param responset:
+    :return song: A song object
     """
+    response_object = response.get("object")
     isrc: dict = response_object.get("isrc")
     artists: list = response_object.get("artists")
     genres: list = response_object.get("genres")
