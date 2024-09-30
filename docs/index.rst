@@ -7,13 +7,10 @@ soundchartspy is a Python wrapper package for the paid API from SoundCharts. Thi
    :maxdepth: 2
    :titlesonly:
 
-   modules
    usage
    installation
-   authentication
-   examples
-   changelog
-   api_reference
+   data
+   client
 
 Installation
 ************

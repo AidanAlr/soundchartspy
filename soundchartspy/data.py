@@ -1,11 +1,17 @@
-import datetime
-import json
 from dataclasses import dataclass, field
-from typing import List
+import datetime
 
 
 @dataclass
 class ISRC:
+    """
+    Represents an International Standard Recording Code (ISRC) for a song.
+
+    Attributes:
+        value (str): The ISRC value, a unique identifier for the recording.
+        countryCode (str): The country code associated with the ISRC.
+        countryName (str): The name of the country associated with the ISRC.
+    """
     value: str
     countryCode: str
     countryName: str
@@ -13,6 +19,16 @@ class ISRC:
 
 @dataclass
 class Artist:
+    """
+    Represents an artist's information.
+
+    Attributes:
+        uuid (str): The unique identifier for the artist.
+        slug (str): A short string that identifies the artist in a URL-friendly format.
+        name (str): The name of the artist.
+        appUrl (str): The URL to the artist's profile on the SoundCharts platform.
+        imageUrl (str): The URL to the artist's image.
+    """
     uuid: str
     slug: str
     name: str
@@ -22,18 +38,48 @@ class Artist:
 
 @dataclass
 class Genre:
+    """
+    Represents the genre of a song.
+
+    Attributes:
+        root (str): The main or root genre of the song.
+        sub (list[str]): A list of sub-genres associated with the song.
+    """
     root: str
-    sub: List[str]
+    sub: list[str]
 
 
 @dataclass
 class Label:
+    """
+    Represents a record label associated with a song.
+
+    Attributes:
+        name (str): The name of the label.
+        type (str): The type of label (e.g., major, indie).
+    """
     name: str
     type: str
 
 
 @dataclass
 class Audio:
+    """
+    Represents the audio properties of a song.
+
+    Attributes:
+        danceability (float): A measure of how suitable the track is for dancing.
+        energy (float): A measure of intensity and activity.
+        instrumentalness (float): Predicts whether the track contains no vocals.
+        key (int): The key of the track.
+        liveness (float): A measure of the presence of a live audience in the track.
+        loudness (float): The overall loudness of the track in decibels.
+        mode (int): The modality (major or minor) of the track.
+        speechiness (float): A measure of the presence of spoken words.
+        tempo (float): The tempo of the track in beats per minute (BPM).
+        timeSignature (int): The time signature of the track.
+        valence (float): A measure of the musical positiveness of the track.
+    """
     danceability: float
     energy: float
     instrumentalness: float
@@ -49,6 +95,16 @@ class Audio:
 
 @dataclass
 class PlatformIdentifier:
+    """
+    Represents platform-specific identifiers for a song or artist.
+
+    Attributes:
+        platformName (str): The name of the platform (e.g., Spotify, Apple Music).
+        platformCode (str): A short code representing the platform.
+        identifier (str): The unique identifier for the song or artist on the platform.
+        url (str): The URL to the song or artist on the platform.
+        default (bool): Whether this is the default identifier.
+    """
     platformName: str
     platformCode: str
     identifier: str
@@ -58,25 +114,56 @@ class PlatformIdentifier:
 
 @dataclass
 class Song:
+    """
+    Represents a song with its metadata.
+
+    Attributes:
+        uuid (str): The unique identifier for the song.
+        name (str): The name of the song.
+        isrc (ISRC): The ISRC code for the song.
+        creditName (str): The credited name for the song's release.
+        artists (list[Artist]): A list of artists associated with the song.
+        releaseDate (str): The release date of the song in ISO format.
+        copyright (str): The copyright information for the song.
+        appUrl (str): The URL to the song on the SoundCharts platform.
+        imageUrl (str): The URL to the song's cover image.
+        duration (int): The duration of the song in seconds.
+        genres (list[Genre]): A list of genres associated with the song.
+        composers (list[str]): A list of composers of the song.
+        producers (list[str]): A list of producers of the song.
+        labels (list[Label]): A list of labels associated with the song.
+        audio (Audio): The audio properties of the song.
+    """
     uuid: str
     name: str
     isrc: ISRC
     creditName: str
-    artists: List[Artist]
+    artists: list[Artist]
     releaseDate: str
     copyright: str
     appUrl: str
     imageUrl: str
     duration: int
-    genres: List[Genre]
-    composers: List[str]
-    producers: List[str]
-    labels: List[Label]
+    genres: list[Genre]
+    composers: list[str]
+    producers: list[str]
+    labels: list[Label]
     audio: Audio
 
 
 @dataclass
 class Album:
+    """
+    Represents an album with its metadata.
+
+    Attributes:
+        name (str): The name of the album.
+        creditName (str): The credited name for the album's release.
+        releaseDate (str | datetime.datetime): The release date of the album.
+        default (bool): Whether this album is the default release.
+        type (str): The type of album (e.g. Album, Compil).
+        uuid (str): The unique identifier for the album.
+    """
     name: str
     creditName: str
     releaseDate: str | datetime.datetime
@@ -86,5 +173,8 @@ class Album:
     _releaseDate: datetime.datetime = field(init=False, repr=False)
 
     def __post_init__(self):
+        """
+        Converts the releaseDate string to a datetime object after initialization.
+        """
         self._releaseDate = datetime.datetime.fromisoformat(self.releaseDate)
         self.releaseDate = self._releaseDate
