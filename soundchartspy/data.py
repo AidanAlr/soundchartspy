@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
 import datetime
+from dataclasses import dataclass
 
 
 @dataclass
@@ -159,22 +159,60 @@ class Album:
     Attributes:
         name (str): The name of the album.
         creditName (str): The credited name for the album's release.
-        releaseDate (str | datetime.datetime): The release date of the album.
+        releaseDate (datetime.datetime): The release date of the album.
         default (bool): Whether this album is the default release.
         type (str): The type of album (e.g. Album, Compil).
         uuid (str): The unique identifier for the album.
     """
     name: str
     creditName: str
-    releaseDate: str | datetime.datetime
+    releaseDate: datetime.datetime
     default: bool
     type: str
     uuid: str
-    _releaseDate: datetime.datetime = field(init=False, repr=False)
 
-    def __post_init__(self):
-        """
-        Converts the releaseDate string to a datetime object after initialization.
-        """
-        self._releaseDate = datetime.datetime.fromisoformat(self.releaseDate)
-        self.releaseDate = self._releaseDate
+
+@dataclass
+class Playlist:
+    """
+    Represents a playlist with its metadata.
+
+    Attributes:
+        uuid (str): The unique identifier for the playlist.
+        name (str): The name of the playlist.
+        identifier (str): The identifier of the playlist.
+        platform (str): The platform where the playlist is hosted.
+        countryCode (str): The country code associated with the playlist.
+        latestCrawlDate (datetime.datetime): The date of the latest crawl.
+        latestTrackCount (int): The latest track count of the playlist.
+        latestSubscriberCount (int): The latest subscriber count of the playlist.
+        type (str): The type of playlist (e.g., user, editorial).
+    """
+    uuid: str
+    name: str
+    identifier: str
+    platform: str
+    countryCode: str
+    latestCrawlDate: datetime.datetime
+    latestTrackCount: int
+    latestSubscriberCount: int
+    type: str
+
+
+@dataclass
+class PlaylistPosition:
+    """
+    Represents the position of a song in a playlist.
+
+    Attributes:
+        position (int): The position of the song in the playlist.
+        peakPosition (int): The peak position of the song in the playlist.
+        entryDate (datetime.datetime): The date the song entered the playlist.
+        positionDate (datetime.datetime): The date of the position.
+        peakPositionDate (datetime.datetime): The date of the peak position.
+    """
+    position: int
+    peakPosition: int
+    entryDate: datetime.datetime
+    positionDate: datetime.datetime
+    peakPositionDate: datetime.datetime

@@ -1,9 +1,11 @@
 import logging
+
 import requests
 from requests import Response
 
-from soundchartspy.data import Song, PlatformIdentifier, Album
-from soundchartspy.utils import check_response_for_errors_and_convert_to_dict, convert_song_response_to_object
+from soundchartspy.data import Song, PlatformIdentifier, Album, Playlist, PlaylistPosition
+from soundchartspy.utils import check_response_for_errors_and_convert_to_dict, convert_song_response_to_object, \
+    convert_release_date_to_datetime, convert_playlist_entry_data_to_tuple_pair
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +59,7 @@ class SoundCharts:
 
         Example:
             >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
-            >>> song = soundcharts.song(uuid="1234567890")
+            >>> song = soundcharts.song(uuid="7d534228-5165-11e9-9375-549f35161576")
         """
         endpoint: str = f"/api/v2.25/song/{uuid}"
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
@@ -118,7 +120,7 @@ class SoundCharts:
 
         Example:
             >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
-            >>> platform_ids = soundcharts.song_ids(uuid="1234567890", platform="spotify", limit=50)
+            >>> platform_ids = soundcharts.song_ids(uuid="7d534228-5165-11e9-9375-549f35161576", platform="spotify", limit=50)
         """
         endpoint = f"/api/v2/song/{uuid}/identifiers?offset={offset}&limit={limit}"
         if platform:
@@ -146,11 +148,12 @@ class SoundCharts:
 
         Example:
             >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
-            >>> albums = soundcharts.song_albums(uuid="1234567890", type="album", limit=50, sort_by="releaseDate", sort_order="desc")
+            >>> albums = soundcharts.song_albums(uuid="7d534228-5165-11e9-9375-549f35161576", type="album", limit=50, sort_by="releaseDate", sort_order="desc")
         """
         endpoint = f"/api/v2/song/{uuid}/albums?type={type}&offset={offset}&limit={limit}&sort_by={sort_by}&sort_order={sort_order}"
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
-        items: list = response.get("items")
+        items: list[dict] = response.get("items")
+        items = [convert_release_date_to_datetime(item) for item in items]
         albums = [Album(**item) for item in items]
         return albums
 
@@ -171,7 +174,7 @@ class SoundCharts:
 
         Example:
             >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
-            >>> audience_data = soundcharts.song_audience(uuid="1234567890", platform="spotify", start_date="2023-01-01", end_date="2023-03-31", identifier="2Fxmhks0bxGSBdJ92vM42m")
+            >>> audience_data = soundcharts.song_audience(uuid="7d534228-5165-11e9-9375-549f35161576", platform="spotify", start_date="2023-01-01", end_date="2023-03-31", identifier="2Fxmhks0bxGSBdJ92vM42m")
         """
         endpoint = f"/api/v2/song/{uuid}/audience/{platform}?start_date={start_date}&end_date={end_date}"
         if identifier:
@@ -180,3 +183,79 @@ class SoundCharts:
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         items = response.get("items")
         return items
+
+    def song_spotify_popularity(self, uuid: str, start_date: str = None, end_date: str = None) -> dict:
+        """
+        Retrieve Spotify popularity data for a song.
+
+        Args:
+            uuid (str): The UUID of the song.
+            start_date (str, optional): The start date for the popularity data (format 'YYYY-MM-DD').
+            end_date (str, optional): The end date for the popularity data (format 'YYYY-MM-DD').
+
+        Returns:
+            dict: Spotify popularity data for the song.
+
+        Example:
+            >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
+            >>> spotify_popularity = soundcharts.song_spotify_popularity(uuid="7d534228-5165-11e9-9375-549f35161576")
+        """
+        endpoint = f"/api/v2/song/{uuid}/spotify/identifier/popularity?start_date={start_date}&end_date={end_date}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items = response.get("items")
+        return items
+
+    def song_chart_entries(self, uuid: str, platform: str = "spotify", current_only: bool = True, offset: int = 0,
+                           limit: int = 100,
+                           sort_by: str = "position", sort_order: str = "asc") -> dict:
+        """
+        Retrieve chart entries for a song.
+
+        Args:
+            uuid (str): The UUID of the song.
+            platform (str, optional): The platform code.
+            current_only (bool, optional): Whether to return only current chart entries. Set to False for current and past entries. Defaults to True.
+            offset (int, optional): The starting position of the results. Defaults to 0.
+            limit (int, optional): The number of results to return. Defaults to 100. Maximum is 100.
+            sort_by (str, optional): Sort by field. Defaults to 'position'. Other options are 'rankdate'.
+            sort_order (str, optional): Sort order. Defaults to 'asc'. Other options are 'desc'.
+
+        Returns:
+            dict: Chart entries for the song.
+
+        Example:
+            >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
+            >>> chart_entries = soundcharts.song_chart_entries(uuid="7d534228-5165-11e9-9375-549f35161576", platform="spotify", current_only=True, limit=50)
+        """
+
+        current_only: int = int(current_only)
+        endpoint: str = f"/api/v2/song/{uuid}/charts/ranks/{platform}?current_only={current_only}&offset={offset}&limit={limit}&sort_by={sort_by}&sort_order={sort_order}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items: dict = response.get("items")
+        return items
+
+    def song_playlist_entries(self, uuid: str, platform: str = "spotify", type: str = "all", offset: int = 0,
+                              limit: int = 100, sort_by: str = "position", sort_order: str = "asc") -> list[
+        tuple[Playlist, PlaylistPosition]]:
+        """
+        Retrieve playlist entries for a song.
+        Args:
+            uuid(str): The UUID of the song
+            platform(str, optional): The platform code
+            type(str, optional): A playlist type. Available values are : 'all' or one of editorial, algorithmic, algotorial, major, charts, curators_listeners, radios, this_is
+            offset(int, optional): The starting position of the results
+            limit(int, optional): The number of results to return. Maximum is 100
+            sort_by(str, optional): Sort criteria. Available values are : 'position', 'positionDate', 'subscriberCount', 'entryDate'
+            sort_order(str, optional): Sort order. Available values are : asc, desc
+        Returns:
+            list[tuple[Playlist, PlaylistPosition]]: A list of playlist entries for the song
+        Example:
+            >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
+            >>> playlist_entries = soundcharts.song_playlist_entries(uuid="7d534228-5165-11e9-9375-549f35161576")
+        """
+        endpoint: str = f"/api/v2.20/song/{uuid}/playlist/current/{platform}?type={type}&offset={offset}&limit={limit}&sort_by={sort_by}&sort_order={sort_order}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items: dict = response.get("items")
+        playlist_entries: list[tuple[Playlist, PlaylistPosition]] = [convert_playlist_entry_data_to_tuple_pair(item) for
+                                                                     item in items]
+        return playlist_entries
