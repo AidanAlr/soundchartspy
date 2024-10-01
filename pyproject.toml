@@ -15,6 +15,17 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "requests",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "flake8",
+]
+
+
 [project.urls]
 Homepage = "https://github.com/AidanAlr/soundchartspy"
 Issues = "https://github.com/AidanAlr/soundchartspy/issues"
