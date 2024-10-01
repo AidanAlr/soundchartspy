@@ -77,5 +77,3 @@ Contributing
 #. Fork the `soundchartspy repository on GitHub <https://github.com/AidanAlr/soundchartspy>`_ to start making changes.
 #. Add a test case to ensure that the bug is fixed or the feature is implemented correctly.
 #. Submit your pull request for review.
-
-Please do not update the library version in `CHANGELOG.rst` or `soundchartspy/__init__.py`. The maintainer will handle this during release.
