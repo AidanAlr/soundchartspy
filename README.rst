@@ -28,7 +28,7 @@ If you'd like to install the latest development version from source:
 
     pip install -e 'git+https://github.com/AidanAlr/soundchartspy.git#egg=soundchartspy'
 
-Make sure to set up your API key and app ID in order to access the SoundCharts API. Detailed setup instructions can be found in the documentation.
+Make sure to you have contacted SoundCharts and have purchased a plan providing the required app id and api key.
 
 About
 =====
