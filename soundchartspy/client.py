@@ -3,7 +3,7 @@ import logging
 import requests
 from requests import Response
 
-from soundchartspy.data import Song, PlatformIdentifier, Album, Playlist, PlaylistPosition
+from soundchartspy.data import Song, PlatformIdentifier, Album, Playlist, PlaylistPosition, RadioStation
 from soundchartspy.utils import check_response_for_errors_and_convert_to_dict, convert_song_response_to_object, \
     convert_release_date_to_datetime, convert_playlist_entry_data_to_tuple_pair
 
@@ -44,7 +44,6 @@ class SoundCharts:
         url: str = base_url + append_to_base_url
         response: Response = requests.get(url, headers=self._get_credentials())
         response: dict = check_response_for_errors_and_convert_to_dict(response=response)
-        logger.debug("GET request to {}".format(url))
         return response
 
     def song(self, uuid: str) -> Song:
@@ -259,3 +258,73 @@ class SoundCharts:
         playlist_entries: list[tuple[Playlist, PlaylistPosition]] = [convert_playlist_entry_data_to_tuple_pair(item) for
                                                                      item in items]
         return playlist_entries
+
+    def song_radio_spins(self, uuid: str, radio_slugs: list[str], country_code: str = None, start_date: str = None,
+                         end_date: str = None,
+                         offset: int = 0, limit: int = 100) -> list[dict[str, RadioStation | str]]:
+        """
+        Retrieve radio spins for a song.
+
+        Args:
+            uuid (str): The UUID of the song.
+            radio_slugs (list[str]): A list of radio slugs.
+            country_code (str): The country code.
+            start_date (str) : Period start date (Format ATOM). Example : 2019-01-01T00:00:00Z
+            end_date (str): Period end date (Format ATOM). Example : 2019-01-01T00:00:00Z
+            offset (int, optional): The starting position of the results. Defaults to 0.
+            limit (int, optional): The number of results to return. Defaults to 100.
+
+        Returns:
+            dict: Radio spins for the song.
+
+        Example:
+            >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
+            >>> radio_spins = soundcharts.song_radio_spins(uuid="7d534228-5165-11e9-9375-549f35161576", radio_slugs=["nrj", "funradio"], country_code="FR", start_date="2019-01-01T00:00:00Z", end_date="2019-01-01T00:00:00Z", offset=0, limit=100)
+        """
+        radio_slugs_str = ",".join(radio_slugs)
+        endpoint = f"/api/v2/song/{uuid}/broadcasts?radio_slugs={radio_slugs_str}&country_code={country_code}&start_date={start_date}&end_date={end_date}&offset={offset}&limit={limit}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items = response.get("items")
+
+        new_items = []
+        for item in items:
+            radio = item.get("radio")
+            item["radio"] = RadioStation(**radio)
+            new_items.append(item)
+
+        return new_items
+
+    def song_radio_spin_count(self, uuid: str, radio_slugs: list[str], country_code: str = None, start_date: str = None,
+                              end_date: str = None,
+                              offset: int = 0, limit: int = 100) -> list[dict[str, RadioStation | int]]:
+        """
+        Retrieve radio spin count for a song.
+
+        Args:
+            uuid (str): The UUID of the song.
+            radio_slugs (list[str]): A list of radio slugs.
+            country_code (str): The country code.
+            start_date (str) : Period start date (Format ATOM). Example : 2019-01-01T00:00:00Z
+            end_date (str): Period end date (Format ATOM). Example : 2019-01-01T00:00:00Z
+            offset (int, optional): The starting position of the results. Defaults to 0.
+            limit (int, optional): The number of results to return. Defaults to 100.
+
+        Returns:
+            list of dict: Radio spin count for the song. Example Return = [{"playCount": 10,"radio": RadioStation}, {"playCount": 20,"radio": RadioStation}]
+
+        Example:
+            >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
+            >>> radio_spins = soundcharts.song_radio_spin_count(uuid="7d534228-5165-11e9-9375-549f35161576", radio_slugs=["nrj", "funradio"], country_code="FR", start_date="2019-01-01T00:00:00Z", end_date="2019-01-01T00:00:00Z", offset=0, limit=100)
+        """
+        radio_slugs_str = ",".join(radio_slugs)
+        endpoint = f"/api/v2/song/{uuid}/broadcasts?radio_slugs={radio_slugs_str}&country_code={country_code}&start_date={start_date}&end_date={end_date}&offset={offset}&limit={limit}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items = response.get("items")
+
+        new_items = []
+        for item in items:
+            radio = item.get("radio")
+            item["radio"] = RadioStation(**radio)
+            new_items.append(item)
+
+        return new_items

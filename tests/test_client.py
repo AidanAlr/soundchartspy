@@ -1,6 +1,10 @@
+import logging
 import unittest
 
 from soundchartspy.client import SoundCharts
+from tests.logging_config import setup_logging
+
+logger = setup_logging(log_level=logging.DEBUG)
 
 
 class TestSongMethods(unittest.TestCase):
@@ -53,10 +57,10 @@ class TestSongMethods(unittest.TestCase):
         entries = self.sc.song_playlist_entries(uuid=self.demo_song_uuid)
         assert entries is not None, "Failed to get playlist entries"
 
-#  def test_get_song_radio_spins(self):
-#      spins = self.sc.song_radio_spins(uuid=self.demo_song_uuid)
-#      assert spins is not None, "Failed to get radio spins"
-#
-# def test_get_song_radio_spin_countries(self):
-#      countries = self.sc.song_radio_spin_countries(uuid=self.demo_song_uuid)
-#      assert countries is not None, "Failed to get radio spin countries"
+    def test_get_song_radio_spins(self):
+        spins = self.sc.song_radio_spins(uuid=self.demo_song_uuid, radio_slugs=["bbc-2", "bbc-london"])
+        assert spins is not None, "Failed to get radio spins"
+
+    def test_get_song_radio_spin_count(self):
+        countries = self.sc.song_radio_spin_count(uuid=self.demo_song_uuid, radio_slugs=["bbc-2", "bbc-london"])
+        assert countries is not None, "Failed to get radio spin countries"

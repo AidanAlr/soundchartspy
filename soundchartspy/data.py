@@ -216,3 +216,24 @@ class PlaylistPosition:
     entryDate: datetime.datetime
     positionDate: datetime.datetime
     peakPositionDate: datetime.datetime
+
+
+@dataclass
+class RadioStation:
+    """
+    Represents a radio station with its metadata.
+
+    Attributes:
+        slug (str): The unique identifier for the radio station.
+        name (str): The name of the radio station.
+        cityName (str): The city where the radio station is located.
+        countryCode (str): The country code associated with the radio station.
+        countryName (str): The name of the country associated with the radio station.
+        timeZone (str): The time zone of the radio station.
+    """
+    slug: str
+    name: str
+    cityName: str
+    countryCode: str
+    countryName: str
+    timeZone: str
