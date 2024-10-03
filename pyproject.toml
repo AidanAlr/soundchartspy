@@ -1,9 +1,12 @@
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
 [project]
 name = "soundchartspy"
-version = "0.0.1"
+dynamic = [
+    "version",
+]
 authors = [
     { name = "AidanAlr", email = "aidanalrawi@icloud.com" },
 ]
@@ -24,7 +27,8 @@ dev = [
     "pytest",
     "flake8",
 ]
-
+[tool.hatch.version]
+path = "soundchartspy/__about__.py"
 
 [project.urls]
 Homepage = "https://github.com/AidanAlr/soundchartspy"

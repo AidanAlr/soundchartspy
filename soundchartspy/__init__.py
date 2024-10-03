@@ -1,10 +1,3 @@
-from importlib.metadata import version, PackageNotFoundError
+from soundchartspy.__about__ import __version__
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-try:
-    __version__ = version("soundchartspy")
-except PackageNotFoundError:
-    __version__ = "unknown"
+__version__ = __version__
