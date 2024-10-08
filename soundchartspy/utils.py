@@ -2,7 +2,16 @@ import datetime
 
 from requests import Response
 
-from soundchartspy.data import Label, Genre, Artist, ISRC, Audio, Song, Playlist, PlaylistPosition
+from soundchartspy.data import (
+    Label,
+    Genre,
+    Artist,
+    ISRC,
+    Audio,
+    Song,
+    Playlist,
+    PlaylistPosition,
+)
 from soundchartspy.exceptions import SoundChartsError
 
 
@@ -31,8 +40,11 @@ def convert_song_response_to_object(response: dict) -> Song:
     audio_object = Audio(**audio)
 
     # Remove the object attributes from the response object
-    non_object_attributes: dict = {key: value for key, value in response_object.items() if
-                                   key not in ["isrc", "artists", "genres", "labels", "audio"]}
+    non_object_attributes: dict = {
+        key: value
+        for key, value in response_object.items()
+        if key not in ["isrc", "artists", "genres", "labels", "audio"]
+    }
 
     # Convert the release date string to a datetime object
     non_object_attributes = convert_release_date_to_datetime(non_object_attributes)
@@ -44,7 +56,7 @@ def convert_song_response_to_object(response: dict) -> Song:
         genres=genres_objects,
         labels=labels_objects,
         audio=audio_object,
-        **non_object_attributes
+        **non_object_attributes,
     )
 
     return song
@@ -82,7 +94,9 @@ def convert_release_date_to_datetime(item: dict) -> dict:
     return item
 
 
-def convert_playlist_entry_data_to_tuple_pair(item: dict) -> tuple[Playlist, PlaylistPosition]:
+def convert_playlist_entry_data_to_tuple_pair(
+    item: dict,
+) -> tuple[Playlist, PlaylistPosition]:
     """
     Takes a dictionary of playlist entry data and converts it to a tuple of Playlist and PlaylistPosition objects.
     Args:
@@ -109,5 +123,16 @@ def get_playlist_position_data(item):
         "peakPosition": item.get("peakPosition"),
         "entryDate": item.get("entryDate"),
         "positionDate": item.get("positionDate"),
-        "peakPositionDate": item.get("peakPositionDate")
+        "peakPositionDate": item.get("peakPositionDate"),
     }
+
+
+def convert_json_to_artist_object(artist: dict) -> Artist:
+    # Convert the genres to Genre objects
+    genres: list[Genre] = [Genre(**genre) for genre in artist.get("genres")]
+    artist["genres"] = genres
+    # Convert the birth date to a datetime object
+    artist["birthDate"] = datetime.datetime.fromisoformat(artist["birthDate"])
+    # Create the Artist object
+    artist: Artist = Artist(**artist)
+    return artist

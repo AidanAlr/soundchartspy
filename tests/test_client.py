@@ -28,7 +28,9 @@ class TestSongMethods(unittest.TestCase):
         assert song is not None, "Failed to get song from isrc"
 
     def test_get_song_by_platform_id(self):
-        song = self.sc.song_by_platform_id(platform=self.platform, identifier=self.spotify_identifier)
+        song = self.sc.song_by_platform_id(
+            platform=self.platform, identifier=self.spotify_identifier
+        )
         assert song is not None, "Failed to get song from platform id"
 
     def test_get_song_ids(self):
@@ -42,7 +44,9 @@ class TestSongMethods(unittest.TestCase):
     def test_get_song_audience(self):
         platforms = ["spotify"]
         for platform in platforms:
-            audience = self.sc.song_audience(uuid=self.demo_song_uuid, platform=platform)
+            audience = self.sc.song_audience(
+                uuid=self.demo_song_uuid, platform=platform
+            )
             assert audience is not None, "Failed to get song audience"
 
     def test_get_spotify_popularity(self):
@@ -58,9 +62,38 @@ class TestSongMethods(unittest.TestCase):
         assert entries is not None, "Failed to get playlist entries"
 
     def test_get_song_radio_spins(self):
-        spins = self.sc.song_radio_spins(uuid=self.demo_song_uuid, radio_slugs=["bbc-2", "bbc-london"])
+        spins = self.sc.song_radio_spins(
+            uuid=self.demo_song_uuid, radio_slugs=["bbc-2", "bbc-london"]
+        )
         assert spins is not None, "Failed to get radio spins"
 
     def test_get_song_radio_spin_count(self):
-        countries = self.sc.song_radio_spin_count(uuid=self.demo_song_uuid, radio_slugs=["bbc-2", "bbc-london"])
+        countries = self.sc.song_radio_spin_count(
+            uuid=self.demo_song_uuid, radio_slugs=["bbc-2", "bbc-london"]
+        )
         assert countries is not None, "Failed to get radio spin countries"
+
+
+class TestArtistMethods(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        KEY = "soundcharts"
+        ID = "soundcharts"
+        cls.sc = SoundCharts(app_id=ID, api_key=KEY)
+        cls.demo_artist_uuid = "11e81bcc-9c1c-ce38-b96b-a0369fe50396"
+
+    def test_get_artist(self):
+        artist = self.sc.artist(uuid=self.demo_artist_uuid)
+        assert artist is not None, "Failed to get artist from uuid"
+
+    def test_get_artist_by_platform_id(self):
+        artist = self.sc.artist_by_platform_id(
+            platform="spotify", identifier="6qqNVTkY8uBg9cP3Jd7DAH"
+        )
+        assert artist is not None, "Failed to get artist from platform id"
+
+    def test_get_artist_ids(self):
+        artist_ids = self.sc.artist_ids(uuid=self.demo_artist_uuid, platform="spotify")
+        logger.debug(artist_ids)
+        assert artist_ids is not None, "Failed to get artist ids"

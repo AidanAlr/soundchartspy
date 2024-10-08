@@ -10,12 +10,14 @@ from soundchartspy.data import (
     Playlist,
     PlaylistPosition,
     RadioStation,
+    Artist,
 )
 from soundchartspy.utils import (
     check_response_for_errors_and_convert_to_dict,
     convert_song_response_to_object,
     convert_release_date_to_datetime,
     convert_playlist_entry_data_to_tuple_pair,
+    convert_json_to_artist_object,
 )
 
 logger = logging.getLogger(__name__)
@@ -391,3 +393,69 @@ class SoundCharts:
             new_items.append(item)
 
         return new_items
+
+    def artist(self, uuid: str) -> Artist:
+        """
+        Get an artist by its SoundCharts UUID.
+
+        Args:
+            uuid (str): The UUID of the artist.
+
+        Returns:
+            artist (Artist): The artist object.
+
+        Example:
+            >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
+            >>> artist = soundcharts.artist(uuid="7d534228-5165-11e9-9375-549f35161576")
+        """
+        endpoint: str = f"/api/v2.9/artist/{uuid}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        # Get the artist object from the response
+        artist: dict = response.get("object")
+        artist: Artist = convert_json_to_artist_object(artist)
+        return artist
+
+    def artist_by_platform_id(self, platform: str, identifier: str) -> Artist:
+        """
+        Get an artist by its platform and identifier.
+        Args:
+            platform (str): The platform code (e.g.'spotify'). Usually just the platform name in lowercase, replace spaces with -.
+             These can be found using the platforms method.
+            identifier (str): The platform-specific artist identifier.
+
+        Returns:
+            artist (Artist): The artist object.
+
+        """
+        endpoint: str = f"/api/v2.9/artist/by-platform/{platform}/{identifier}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        # Get the artist object from the response
+        artist: dict = response.get("object")
+        artist: Artist = convert_json_to_artist_object(artist)
+        return artist
+
+    def artist_ids(
+        self, uuid: str, platform: str = None, offset: int = 0, limit: int = 100
+    ) -> list[PlatformIdentifier]:
+        """
+        Get platform-specific identifiers for an artist.
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str, optional): A platform name to filter the results.
+            offset (int, optional): The starting position of the results. Defaults to 0.
+            limit (int, optional): The number of results to return. Defaults to 100.
+
+        Returns:
+            list[PlatformIdentifier]: A list of platform identifiers for the artist.
+
+        Example:
+            >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
+            >>> platform_ids = soundcharts.artist_ids(uuid="7d534228-5165-11e9-9375-549f35161576", platform="spotify", limit=50)
+        """
+        endpoint = f"/api/v2/artist/{uuid}/identifiers?platform={platform}&offset={offset}&limit={limit}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items: list = response.get("items")
+        platform_identifiers = [PlatformIdentifier(**item) for item in items]
+        return platform_identifiers
+

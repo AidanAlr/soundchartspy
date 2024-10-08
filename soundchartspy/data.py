@@ -1,5 +1,6 @@
 import datetime
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -12,6 +13,7 @@ class ISRC:
         countryCode (str): The country code associated with the ISRC.
         countryName (str): The name of the country associated with the ISRC.
     """
+
     value: str
     countryCode: str
     countryName: str
@@ -29,11 +31,20 @@ class Artist:
         appUrl (str): The URL to the artist's profile on the SoundCharts platform.
         imageUrl (str): The URL to the artist's image.
     """
+
     uuid: str
     slug: str
     name: str
     appUrl: str
     imageUrl: str
+    countryCode: Optional[str] = None
+    biography: Optional[str] = None
+    isni: Optional[str] = None
+    ipi: Optional[str] = None
+    gender: Optional[str] = None
+    type: Optional[str] = None
+    birthDate: Optional[datetime.datetime] = None
+    genres: Optional[list[str]] = None
 
 
 @dataclass
@@ -45,6 +56,7 @@ class Genre:
         root (str): The main or root genre of the song.
         sub (list[str]): A list of sub-genres associated with the song.
     """
+
     root: str
     sub: list[str]
 
@@ -58,6 +70,7 @@ class Label:
         name (str): The name of the label.
         type (str): The type of label (e.g., major, indie).
     """
+
     name: str
     type: str
 
@@ -80,6 +93,7 @@ class Audio:
         timeSignature (int): The time signature of the track.
         valence (float): A measure of the musical positiveness of the track.
     """
+
     danceability: float
     energy: float
     instrumentalness: float
@@ -105,6 +119,7 @@ class PlatformIdentifier:
         url (str): The URL to the song or artist on the platform.
         default (bool): Whether this is the default identifier.
     """
+
     platformName: str
     platformCode: str
     identifier: str
@@ -134,6 +149,7 @@ class Song:
         labels (list[Label]): A list of labels associated with the song.
         audio (Audio): The audio properties of the song.
     """
+
     uuid: str
     name: str
     isrc: ISRC
@@ -164,6 +180,7 @@ class Album:
         type (str): The type of album (e.g. Album, Compil).
         uuid (str): The unique identifier for the album.
     """
+
     name: str
     creditName: str
     releaseDate: datetime.datetime
@@ -188,6 +205,7 @@ class Playlist:
         latestSubscriberCount (int): The latest subscriber count of the playlist.
         type (str): The type of playlist (e.g., user, editorial).
     """
+
     uuid: str
     name: str
     identifier: str
@@ -211,6 +229,7 @@ class PlaylistPosition:
         positionDate (datetime.datetime): The date of the position.
         peakPositionDate (datetime.datetime): The date of the peak position.
     """
+
     position: int
     peakPosition: int
     entryDate: datetime.datetime
@@ -231,6 +250,7 @@ class RadioStation:
         countryName (str): The name of the country associated with the radio station.
         timeZone (str): The time zone of the radio station.
     """
+
     slug: str
     name: str
     cityName: str
