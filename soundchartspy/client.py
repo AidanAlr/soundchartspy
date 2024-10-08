@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 import requests
@@ -15,7 +16,6 @@ from soundchartspy.data import (
 from soundchartspy.utils import (
     check_response_for_errors_and_convert_to_dict,
     convert_song_response_to_object,
-    convert_release_date_to_datetime,
     convert_playlist_entry_data_to_tuple_pair,
     convert_json_to_artist_object,
 )
@@ -173,7 +173,12 @@ class SoundCharts:
         endpoint = f"/api/v2/song/{uuid}/albums?type={type}&offset={offset}&limit={limit}&sort_by={sort_by}&sort_order={sort_order}"
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         items: list[dict] = response.get("items")
-        items = [convert_release_date_to_datetime(item) for item in items]
+
+        for item in items:
+            item["releaseDate"] = datetime.datetime.fromisoformat(
+                item.get("releaseDate")
+            )
+
         albums = [Album(**item) for item in items]
         return albums
 
@@ -458,4 +463,3 @@ class SoundCharts:
         items: list = response.get("items")
         platform_identifiers = [PlatformIdentifier(**item) for item in items]
         return platform_identifiers
-

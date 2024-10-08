@@ -165,6 +165,7 @@ class Song:
     producers: list[str]
     labels: list[Label]
     audio: Audio
+    explicit: bool
 
 
 @dataclass
