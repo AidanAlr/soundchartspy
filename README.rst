@@ -67,6 +67,45 @@ Here's an example of how to use `soundchartspy`:
     albums: list[Album] = sc.song_albums(song.uuid)
     print("Albums: {}".format(albums))
 
+API Implementation Status
+======================
+
+✅ Completed Methods
+------------------
+* Song Methods
+    * ``SoundCharts.song()``
+    * ``SoundCharts.song_by_isrc()``
+    * ``SoundCharts.song_by_platform_id()``
+    * ``SoundCharts.song_ids()``
+    * ``SoundCharts.song_albums()``
+    * ``SoundCharts.song_audience()``
+    * ``SoundCharts.song_spotify_popularity()``
+    * ``SoundCharts.song_chart_entries()``
+    * ``SoundCharts.song_playlist_entries()``
+    * ``SoundCharts.song_radio_spins()``
+    * ``SoundCharts.song_radio_spin_count()``
+
+* Artist Methods (Partially Implemented)
+    * ``SoundCharts.artist()``
+    * ``SoundCharts.artist_by_platform_id()``
+    * ``SoundCharts.artist_ids()``
+
+📋 Pending Implementation
+-----------------------
+* Remaining Artist Methods
+* Chart Methods
+* Playlist Methods
+* Search Methods
+* Album Methods
+* Radio Methods
+* TikTok Methods
+* User Methods
+
+Development Notes
+---------------
+* All implemented methods follow the official SoundCharts API specification
+* Unit tests available for implemented methods
+
 Found a Bug?
 ============
 Issues are tracked via GitHub at the `project issue page <https://github.com/AidanAlr/soundchartspy/issues>`_.
