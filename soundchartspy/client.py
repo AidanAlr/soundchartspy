@@ -495,9 +495,9 @@ class SoundCharts:
         items: list = response.get("items")
         # Convert the release date to a datetime object
         for song in items:
-            song["releaseDate"] = datetime.datetime.fromisoformat(
-                song.get("releaseDate")
-            )
+            release_date = song.get("releaseDate")
+            if release_date:
+                song["releaseDate"] = datetime.datetime.fromisoformat(release_date)
 
         songs = [ArtistSongEntry(**item) for item in items]
         return songs
