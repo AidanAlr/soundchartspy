@@ -105,3 +105,11 @@ class TestArtistMethods(unittest.TestCase):
     def test_get_artist_albums(self):
         albums = self.sc.artist_albums(uuid=self.demo_artist_uuid)
         assert albums is not None, "Failed to get artist albums"
+
+    def test_get_artist_similar_artists(self):
+        similar_artists = self.sc.artist_similar_artists(uuid=self.demo_artist_uuid)
+        assert similar_artists is not None, "Failed to get similar artists"
+
+    def test_get_artist_current_stats(self):
+        stats = self.sc.artist_current_stats(uuid=self.demo_artist_uuid)
+        assert stats is not None, "Failed to get current stats"

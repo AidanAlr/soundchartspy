@@ -531,3 +531,37 @@ class SoundCharts:
         albums: list[dict] = response.get("items")
         albums: list[Album] = [Album(**item) for item in albums]
         return albums
+
+    def artist_similar_artists(
+        self, uuid: str, offset: int = 0, limit: int = 100
+    ) -> list[Artist]:
+        """
+        Similar artists ("Fans Also Like" profiles) are determined by Spotify algorithms that analyze the listening habits of artists' fans.
+        For instance, if many fans of artist A frequently listen to artists B and C, then B and C are considered similar artists. Artists cannot edit what appears in "Fans Also Like."
+        We obtain the list of similar artists from Spotify and rank it alphabetically, which may differ from the ranking on Spotify's dashboard.
+        Args:
+            uuid (str): The UUID of the artist.
+            offset (int, optional): The starting position of the results. Defaults to 0.
+            limit (int, optional): The number of results to return. Defaults to 100.
+
+        Returns:
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/related?offset={offset}&limit={limit}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items: list = response.get("items")
+        similar_artists: list[Artist] = [Artist(**item) for item in items]
+        return similar_artists
+
+    def artist_current_stats(self, uuid: str, period: int = 7) -> dict:
+        """
+        This API returns all current stats of all platforms, with the growth period of your choice.
+        Args:
+            uuid (str): The UUID of the artist.
+            period (int, optional): The number of days to calculate the growth. Defaults to 7.
+        Returns:
+            dict: The current stats for the artist. "Social", "Popularity", "Retention", "Streaming" are main categories.
+        """
+        endpoint = f"/api/v2/artist/{uuid}/current/stats"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
