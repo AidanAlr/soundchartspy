@@ -169,6 +169,14 @@ class Song:
 
 
 @dataclass
+class ArtistSongEntry:
+    uuid: str
+    creditName: str
+    name: str
+    releaseDate: datetime.datetime
+
+
+@dataclass
 class Album:
     """
     Represents an album with its metadata.
@@ -185,9 +193,9 @@ class Album:
     name: str
     creditName: str
     releaseDate: datetime.datetime
-    default: bool
     type: str
     uuid: str
+    default: Optional[bool] = None
 
 
 @dataclass

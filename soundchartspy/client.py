@@ -12,6 +12,7 @@ from soundchartspy.data import (
     PlaylistPosition,
     RadioStation,
     Artist,
+    ArtistSongEntry,
 )
 from soundchartspy.utils import (
     check_response_for_errors_and_convert_to_dict,
@@ -463,3 +464,70 @@ class SoundCharts:
         items: list = response.get("items")
         platform_identifiers = [PlatformIdentifier(**item) for item in items]
         return platform_identifiers
+
+    def artist_songs(
+        self,
+        uuid: str,
+        offset: int = 0,
+        limit: int = 100,
+        sort_by: str = "name",
+        sort_order: str = "asc",
+    ) -> list[Song]:
+        """
+        Get songs associated with an artist.
+
+        Args:
+            uuid (str): The UUID of the artist.
+            offset (int, optional): The starting position of the results. Defaults to 0.
+            limit (int, optional): The number of results to return. Defaults to 100.
+            sort_by (str, optional): Sort by field. Defaults to 'name'. Available values are : name, releaseDate, spotifyStream, shazamCount, youtubeViews, spotifyPopularity
+            sort_order (str, optional): Sort order. Defaults to 'asc'. Other options are 'desc'.
+
+        Returns:
+            list[Song]: A list of songs associated with the artist.
+
+        Example:
+            >>> soundcharts = SoundCharts(app_id="your_app_id", api_key="your_api_key")
+            >>> songs = soundcharts.artist_songs(offset=0, limit=50)
+        """
+        endpoint = f"/api/v2.21/artist/{uuid}/songs?offset={offset}&limit={limit}&sortBy={sort_by}&sortOrder={sort_order}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items: list = response.get("items")
+        # Convert the release date to a datetime object
+        for song in items:
+            song["releaseDate"] = datetime.datetime.fromisoformat(
+                song.get("releaseDate")
+            )
+
+        songs = [ArtistSongEntry(**item) for item in items]
+        return songs
+
+    def artist_albums(
+        self,
+        uuid: str,
+        type: str = "all",
+        offset: int = 0,
+        limit: int = 100,
+        sort_by: str = "title",
+        sort_order: str = "asc",
+    ) -> list[Album]:
+        """
+        Get albums associated with an artist.
+        Args:
+            uuid (str): The UUID of the artist.
+            type (str, optional): Filter by album type. Defaults to 'all'. Available values are : all, album, single, compil
+            offset (int, optional): The starting position of the results. Defaults to 0.
+            limit (int, optional): The number of results to return. Defaults to 100.
+            sort_by (str, optional): Sort by field. Defaults to 'title'. Available values are : title, releaseDate
+            sort_order (str, optional): Sort order. Defaults to 'asc'. Other options are 'desc'.
+
+        Returns:
+            list[Album]: A list of albums associated with the artist.
+
+        """
+
+        endpoint = f"/api/v2.34/artist/{uuid}/albums?offset={offset}&limit={limit}&sortBy={sort_by}&sortOrder={sort_order}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        albums: list[dict] = response.get("items")
+        albums: list[Album] = [Album(**item) for item in albums]
+        return albums

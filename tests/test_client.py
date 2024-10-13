@@ -97,3 +97,11 @@ class TestArtistMethods(unittest.TestCase):
         artist_ids = self.sc.artist_ids(uuid=self.demo_artist_uuid, platform="spotify")
         logger.debug(artist_ids)
         assert artist_ids is not None, "Failed to get artist ids"
+
+    def test_get_artist_songs(self):
+        songs = self.sc.artist_songs(uuid=self.demo_artist_uuid)
+        assert songs is not None, "Failed to get artist songs"
+
+    def test_get_artist_albums(self):
+        albums = self.sc.artist_albums(uuid=self.demo_artist_uuid)
+        assert albums is not None, "Failed to get artist albums"
