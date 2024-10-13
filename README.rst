@@ -91,6 +91,9 @@ API Implementation Status
     * ``SoundCharts.artist_ids()``
     * ``SoundCharts.artist_songs()``
     * ``SoundCharts.artist_albums()``
+    * ``SoundCharts.artist_similar_artists()``
+    * ``SoundCharts.artist_current_stats()``
+
 
 
 📋 Pending Implementation
