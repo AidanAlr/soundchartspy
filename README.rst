@@ -93,7 +93,11 @@ API Implementation Status
     * ``SoundCharts.artist_albums()``
     * ``SoundCharts.artist_similar_artists()``
     * ``SoundCharts.artist_current_stats()``
-
+    * ``SoundCharts.artist_current_stats()``
+    * ``SoundCharts.artist_audience()``
+    * ``SoundCharts.artist_listeners_streams_views()``
+    * ``SoundCharts.artist_spotify_monthly_listeners_latest()``
+    * ``SoundCharts.artist_spotify_monthly_listeners_by_month()``
 
 
 📋 Pending Implementation
