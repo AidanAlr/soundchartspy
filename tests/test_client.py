@@ -113,3 +113,27 @@ class TestArtistMethods(unittest.TestCase):
     def test_get_artist_current_stats(self):
         stats = self.sc.artist_current_stats(uuid=self.demo_artist_uuid)
         assert stats is not None, "Failed to get current stats"
+
+    def test_get_artist_audience(self):
+        audience = self.sc.artist_audience(uuid=self.demo_artist_uuid)
+        assert audience is not None, "Failed to get artist audience"
+
+    def test_get_artist_listeners_streams_views(self):
+        listeners_streams_views = self.sc.artist_listeners_streams_views(
+            uuid=self.demo_artist_uuid, platform="spotify"
+        )
+        assert (
+            listeners_streams_views is not None
+        ), "Failed to get artist listeners streams views"
+
+    def test_get_artist_spotify_monthly_listeners_latest(self):
+        listeners = self.sc.artist_spotify_monthly_listeners_latest(
+            uuid=self.demo_artist_uuid
+        )
+        assert listeners is not None, "Failed to get artist spotify monthly listeners"
+
+    def test_get_artist_spotify_listeners_by_month(self):
+        listeners = self.sc.artist_spotify_monthly_listeners_by_month(
+            uuid=self.demo_artist_uuid, year="2020", month="10"
+        )
+        assert listeners is not None, "Failed to get artist spotify listeners by month"

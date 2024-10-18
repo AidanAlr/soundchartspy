@@ -2,6 +2,17 @@ import datetime
 from dataclasses import dataclass
 from typing import Optional
 
+@dataclass
+class AudienceData:
+    date: datetime.datetime
+    likeCount: Optional[int]
+    followerCount: Optional[int]
+    followingCount: Optional[int]
+    postCount: Optional[int]
+    viewCount: Optional[int]
+
+
+
 
 @dataclass
 class ISRC:

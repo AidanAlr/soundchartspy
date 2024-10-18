@@ -13,6 +13,7 @@ from soundchartspy.data import (
     RadioStation,
     Artist,
     ArtistSongEntry,
+    AudienceData,
 )
 from soundchartspy.utils import (
     check_response_for_errors_and_convert_to_dict,
@@ -563,5 +564,109 @@ class SoundCharts:
             dict: The current stats for the artist. "Social", "Popularity", "Retention", "Streaming" are main categories.
         """
         endpoint = f"/api/v2/artist/{uuid}/current/stats"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
+    def artist_audience(
+        self,
+        uuid: str,
+        platform: str = "spotify",
+        start_date: str = None,
+        end_date: str = None,
+    ) -> list[AudienceData]:
+        """
+        Available platforms are listed in the Get platforms for audience data endpoint.
+
+        The API response will include the platform's primary “fan” metric even if it is named differently (e.g., Facebook likes, YouTube subscribers, Deezer fans, Gaana favorites, Line Music Likes). All these are under the "followerCount" metric.
+
+        The API response may not return a value for all dates, as we may miss a day or two. These data points may still show on our UI because we estimate the missing data between two points.
+
+        Audience refresh frequency depends on the artist’s followers on the platform:
+
+        less than 9 followers: every 15 days
+        between 10 and 149 followers: every 7 days
+        between 150 and 499 followers: every 5 days
+        between 500 and 4,999 followers: every 3 days
+        more than 5,000: every 2 days
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str): The platform code. Options include but not limited to "instagram", "spotify", "soundcloud", "tiktok", "triller", "youtube", "deezer" etc.
+            start_date (str): Optional period start date for the audience data (format 'YYYY-MM-DD'). Period cannot exceed 90 days
+            end_date (str): Optional period end date for the audience data (format 'YYYY-MM-DD'). Period cannot exceed 90 days
+
+        Returns:
+            list[AudienceData]: A list of audience data for the artist on the specified platform.
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/audience/{platform}"
+        if start_date:
+            endpoint += f"?startDate={start_date}"
+        if end_date:
+            endpoint += f"&endDate={end_date}"
+
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items = response.get("items")
+        audience_data_ls: list[AudienceData] = [AudienceData(**item) for item in items]
+        return audience_data_ls
+
+    def artist_listeners_streams_views(
+        self, uuid: str, platform: str, start_date: str = None, end_date: str = None
+    ) -> dict:
+        """
+        Get the number of listeners, streams, and views for an artist on a specific platform.
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str): The platform code.
+            start_date (str): The start date for the listening data (format 'YYYY-MM-DD').
+            end_date (str): The end date for the listening data (format 'YYYY-MM-DD').
+
+        Returns:
+            dict: The number of listeners, streams, and views for the artist on the specified platform.
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/streaming/{platform}/listening"
+        if start_date:
+            endpoint += f"?startDate={start_date}"
+        if end_date:
+            endpoint += f"&endDate={end_date}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
+    def artist_spotify_monthly_listeners_latest(self, uuid: str) -> dict:
+        """
+        Get the number of monthly listeners for an artist on Spotify.
+        Spotify uses 28 rolling days (4 weeks of 7 days) to measure a month.
+        It makes sense as the number of days in a month varies from 28 to 31, and people’s behavior depends more on the
+        days of the week than on dates within a single month.
+        This way, there is always an equal number of each day within the 28 rolling day ‘monthly listeners’ stats.
+
+        Args:
+            uuid (str): The UUID of the artist.
+
+        Returns:
+            dict: The number of monthly listeners for the artist on Spotify.
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/streaming/spotify/listeners"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
+    def artist_spotify_monthly_listeners_by_month(
+        self, uuid: str, year: str, month: str
+    ) -> dict:
+        """
+        Get the number of monthly listeners for an artist on Spotify by month.
+        Args:
+            uuid (str): The UUID of the artist.
+            year (str): Year YYYY format
+            month (str): Month MM format
+
+        Returns:
+            dict: The number of monthly listeners for the artist on Spotify by month.
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/streaming/spotify/listeners/{year}/{month}"
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         return response
