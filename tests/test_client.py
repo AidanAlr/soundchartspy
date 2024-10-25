@@ -124,7 +124,8 @@ class TestArtistMethods(unittest.TestCase):
 
     def test_get_artist_listeners_streams_views(self):
         listeners_streams_views = self.sc.artist_listeners_streams_views(
-            uuid=self.demo_artist_uuid, platform="spotify"
+            uuid=self.demo_artist_uuid,
+            platform="spotify",
         )
         assert (
             listeners_streams_views is not None
@@ -141,3 +142,15 @@ class TestArtistMethods(unittest.TestCase):
             uuid=self.demo_artist_uuid, year="2020", month="10"
         )
         assert listeners is not None, "Failed to get artist spotify listeners by month"
+
+    def test_get_artist_retention(self):
+        retention = self.sc.artist_retention(
+            uuid=self.demo_artist_uuid,
+        )
+        assert retention is not None, "Failed to get artist retention"
+
+    def test_get_artist_popularity(self):
+        popularity = self.sc.artist_popularity(
+            uuid=self.demo_artist_uuid,
+        )
+        assert popularity is not None, "Failed to get artist popularity"

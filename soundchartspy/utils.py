@@ -103,3 +103,15 @@ def convert_json_to_artist_object(artist: dict) -> Artist:
     # Create the Artist object
     artist: Artist = Artist(**artist)
     return artist
+
+
+def check_and_add_start_and_end_date_to_query_params(
+    endpoint: str, start_date: str, end_date: str
+):
+
+    if start_date:
+        endpoint += f"?startDate={start_date}"
+    if end_date:
+        endpoint += f"&endDate={end_date}"
+
+    return endpoint

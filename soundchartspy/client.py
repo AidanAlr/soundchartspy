@@ -20,6 +20,7 @@ from soundchartspy.utils import (
     convert_song_response_to_object,
     convert_playlist_entry_data_to_tuple_pair,
     convert_json_to_artist_object,
+    check_and_add_start_and_end_date_to_query_params
 )
 
 logger = logging.getLogger(__name__)
@@ -600,11 +601,7 @@ class SoundCharts:
 
         """
         endpoint = f"/api/v2/artist/{uuid}/audience/{platform}"
-        if start_date:
-            endpoint += f"?startDate={start_date}"
-        if end_date:
-            endpoint += f"&endDate={end_date}"
-
+        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         items = response.get("items")
         audience_data_ls: list[AudienceData] = [AudienceData(**item) for item in items]
@@ -629,11 +626,7 @@ class SoundCharts:
 
         """
         endpoint = f"/api/v2.37/artist/{uuid}/social/{platform}/followers/"
-        if start_date:
-            endpoint += f"?startDate={start_date}"
-        if end_date:
-            endpoint += f"&endDate={end_date}"
-
+        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         return response
 
@@ -654,10 +647,7 @@ class SoundCharts:
 
         """
         endpoint = f"/api/v2/artist/{uuid}/streaming/{platform}/listening"
-        if start_date:
-            endpoint += f"?startDate={start_date}"
-        if end_date:
-            endpoint += f"&endDate={end_date}"
+        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         return response
 
@@ -695,5 +685,66 @@ class SoundCharts:
 
         """
         endpoint = f"/api/v2/artist/{uuid}/streaming/spotify/listeners/{year}/{month}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
+    def artist_retention(
+        self,
+        uuid: str,
+        platform: str = "spotify",
+        start_date: str = None,
+        end_date: str = None,
+    ) -> dict:
+        """
+        Get an artist's fan retention rate across platforms.
+
+        Also called “conversion rate” or “followers to listeners ratio”, this metric shows the relationship between the listeners and the followers. Do take into account that not all followers are listeners. We calculate this by dividing the total number of listeners by the total number of followers, multiplied by 100. The higher the percentage is, the better the artist can turn its listeners into followers.
+
+        Available platforms for this endpoint are Spotify, YouTube, Anghami and JioSaavn.
+
+        Note that the metrics can be different according to the platform:
+
+        Spotify: Followers / Monthly Listeners
+        JioSaavn: Followers / Monthly Listeners
+        YouTube: Subscribers / Views
+        Anghami: Followers / Plays
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str): The platform code.
+            start_date (str): The start date for the retention data (format 'YYYY-MM-DD').
+            end_date (str): The end date for the retention data (format 'YYYY-MM-DD').
+
+        Returns:
+            dict: The retention data for the artist on the specified platform.
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/{platform}/retention"
+        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
+    def artist_popularity(
+        self,
+        uuid: str,
+        platform: str = "spotify",
+        start_date: str = None,
+        end_date: str = None,
+    ) -> dict:
+        """
+        Get an artist's popularity on a platform.
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str): The platform code.
+            start_date (str): The start date for the popularity data (format 'YYYY-MM-DD').
+            end_date (str): The end date for the popularity data (format 'YYYY-MM-DD').
+
+        Returns:
+            dict: The popularity data for the artist on the specified platform.
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/popularity/{platform}"
+        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         return response
