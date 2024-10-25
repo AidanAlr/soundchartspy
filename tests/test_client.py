@@ -179,3 +179,7 @@ class TestArtistMethods(unittest.TestCase):
             uuid=self.demo_artist_uuid,
         )
         assert short_videos is not None, "Failed to get artist short videos"
+
+    def test_get_artist_short_video_audience(self):
+        audience = self.sc.artist_short_video_audience(identifier="C74VMlhOf6K")
+        assert audience is not None, "Failed to get artist short video audience"
