@@ -610,6 +610,33 @@ class SoundCharts:
         audience_data_ls: list[AudienceData] = [AudienceData(**item) for item in items]
         return audience_data_ls
 
+    def artist_local_audience(
+        self,
+        uuid: str,
+        platform: str = "spotify",
+        start_date: str = None,
+        end_date: str = None,
+    ) -> dict:
+        """
+        Get all values for artist followers for a month and located followers for a given date within that month
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str): The platform code.
+            start_date (str): The start date for the listening data (format 'YYYY-MM-DD').
+            end_date (str): The end date for the listening data (format 'YYYY-MM-DD').
+        Returns:
+
+        """
+        endpoint = f"/api/v2.37/artist/{uuid}/social/{platform}/followers/"
+        if start_date:
+            endpoint += f"?startDate={start_date}"
+        if end_date:
+            endpoint += f"&endDate={end_date}"
+
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
     def artist_listeners_streams_views(
         self, uuid: str, platform: str, start_date: str = None, end_date: str = None
     ) -> dict:

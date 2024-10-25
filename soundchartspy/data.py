@@ -2,16 +2,27 @@ import datetime
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class AudienceData:
+    """
+    Represents audience data for an artist or song.
+
+    Attributes:
+        date (datetime.datetime): The date of the audience data.
+        likeCount (int): The number of likes.
+        followerCount (int): The number of followers.
+        followingCount (int): The number of accounts followed.
+        postCount (int): The number of posts.
+        viewCount (int): The number of views.
+    """
+
     date: datetime.datetime
     likeCount: Optional[int]
     followerCount: Optional[int]
     followingCount: Optional[int]
     postCount: Optional[int]
     viewCount: Optional[int]
-
-
 
 
 @dataclass
@@ -159,6 +170,8 @@ class Song:
         producers (list[str]): A list of producers of the song.
         labels (list[Label]): A list of labels associated with the song.
         audio (Audio): The audio properties of the song.
+        explicit (bool): Whether the song contains explicit content.
+        languageCode (str): The language code of the song.
     """
 
     uuid: str
@@ -177,6 +190,7 @@ class Song:
     labels: list[Label]
     audio: Audio
     explicit: bool
+    languageCode: str
 
 
 @dataclass

@@ -118,6 +118,10 @@ class TestArtistMethods(unittest.TestCase):
         audience = self.sc.artist_audience(uuid=self.demo_artist_uuid)
         assert audience is not None, "Failed to get artist audience"
 
+    def test_get_artist_local_audience(self):
+        audience = self.sc.artist_local_audience(uuid=self.demo_artist_uuid)
+        assert audience is not None, "Failed to get artist audience local"
+
     def test_get_artist_listeners_streams_views(self):
         listeners_streams_views = self.sc.artist_listeners_streams_views(
             uuid=self.demo_artist_uuid, platform="spotify"
