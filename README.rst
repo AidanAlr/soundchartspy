@@ -98,6 +98,14 @@ API Implementation Status
     * ``SoundCharts.artist_listeners_streams_views()``
     * ``SoundCharts.artist_spotify_monthly_listeners_latest()``
     * ``SoundCharts.artist_spotify_monthly_listeners_by_month()``
+    * ``SoundCharts.artist_retention()``
+    * ``SoundCharts.artist_popularity()``
+    * ``SoundCharts.artist_audience_report_latest()``
+    * ``SoundCharts.artist_audience_report_dates()``
+    * ``SoundCharts.artist_audience_report_by_date()``
+    * ``SoundCharts.artist_short_videos()``
+    * ``SoundCharts.artist_short_video_audience()``
+
 
 
 📋 Pending Implementation
