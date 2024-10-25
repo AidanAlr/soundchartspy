@@ -291,3 +291,17 @@ class RadioStation:
     countryCode: str
     countryName: str
     timeZone: str
+
+
+@dataclass
+class ShortVideo:
+    """
+    Represents a short video with its metadata.
+    """
+
+    identifier: str
+    title: str
+    description: str
+    createdAt: datetime.datetime
+    externalUrl: str
+    latestAudience: dict

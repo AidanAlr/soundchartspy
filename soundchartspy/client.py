@@ -14,13 +14,14 @@ from soundchartspy.data import (
     Artist,
     ArtistSongEntry,
     AudienceData,
+    ShortVideo,
 )
 from soundchartspy.utils import (
     check_response_for_errors_and_convert_to_dict,
     convert_song_response_to_object,
     convert_playlist_entry_data_to_tuple_pair,
     convert_json_to_artist_object,
-    check_and_add_start_and_end_date_to_query_params
+    check_and_add_start_and_end_date_to_query_params,
 )
 
 logger = logging.getLogger(__name__)
@@ -601,7 +602,9 @@ class SoundCharts:
 
         """
         endpoint = f"/api/v2/artist/{uuid}/audience/{platform}"
-        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
+        endpoint = check_and_add_start_and_end_date_to_query_params(
+            endpoint, start_date, end_date
+        )
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         items = response.get("items")
         audience_data_ls: list[AudienceData] = [AudienceData(**item) for item in items]
@@ -626,7 +629,9 @@ class SoundCharts:
 
         """
         endpoint = f"/api/v2.37/artist/{uuid}/social/{platform}/followers/"
-        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
+        endpoint = check_and_add_start_and_end_date_to_query_params(
+            endpoint, start_date, end_date
+        )
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         return response
 
@@ -647,7 +652,9 @@ class SoundCharts:
 
         """
         endpoint = f"/api/v2/artist/{uuid}/streaming/{platform}/listening"
-        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
+        endpoint = check_and_add_start_and_end_date_to_query_params(
+            endpoint, start_date, end_date
+        )
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         return response
 
@@ -720,7 +727,9 @@ class SoundCharts:
 
         """
         endpoint = f"/api/v2/artist/{uuid}/{platform}/retention"
-        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
+        endpoint = check_and_add_start_and_end_date_to_query_params(
+            endpoint, start_date, end_date
+        )
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         return response
 
@@ -745,6 +754,141 @@ class SoundCharts:
 
         """
         endpoint = f"/api/v2/artist/{uuid}/popularity/{platform}"
-        endpoint = check_and_add_start_and_end_date_to_query_params(endpoint, start_date, end_date)
+        endpoint = check_and_add_start_and_end_date_to_query_params(
+            endpoint, start_date, end_date
+        )
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
+    def artist_audience_report_latest(self, uuid: str, platform: str = "instagram"):
+        """
+        Get the latest demographics reports for social/streaming platforms.
+
+        Please note that:
+
+        Available platforms for this endpoint are instagram, youtube, and tiktok.
+        The artist should have at least 1,000 followers/subscribers on the platform for us to get an audience report.
+        The depth for these platform reports depends on the platform. Instagram is the only platform that returns data for both likes & followers.
+        Audience reports are updated monthly.
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str): The platform code.
+
+        Returns:
+            dict: The latest audience report for the artist on the specified platform.
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/audience/{platform}/report/latest"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
+    def artist_audience_report_dates(
+        self,
+        uuid: str,
+        platform: str = "instagram",
+        start_date: str = None,
+        end_date: str = None,
+        offset: int = 0,
+        limit: int = 100,
+    ):
+        """
+        Get the available dates for demographics reports for social/streaming platforms.
+
+        Please note that:
+
+        Available platforms for this endpoint are instagram, youtube, and tiktok.
+        The artist should have at least 1,000 followers/subscribers on the platform for us to get an audience report.
+        The depth for these platform reports depends on the platform. Instagram is the only platform that returns data for both likes & followers.
+        Audience reports are updated monthly.
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str): The platform code.
+            start_date (str): The start date for the audience reports (format 'YYYY-MM-DD').
+            end_date (str): The end date for the audience reports (format 'YYYY-MM-DD').
+            offset (int): The starting position of the results.
+            limit (int): The number of results to return. Maximum is 100.
+
+        Returns:
+            dict: The available dates for audience reports for the artist on the specified platform.
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/audience/{platform}/report/available-dates"
+        endpoint = check_and_add_start_and_end_date_to_query_params(
+            endpoint, start_date, end_date
+        )
+        if offset:
+            endpoint += f"&offset={offset}"
+        if limit:
+            endpoint += f"&limit={limit}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
+    def artist_audience_report_by_date(
+        self, uuid: str, platform: str = "instagram", date: str = None
+    ):
+        """
+        Get the demographics reports for social/streaming platforms by date.
+
+        Please note that:
+
+        To avoid unnecessary requests, you can first get the dates with available data from the Get available audience report dates endpoint.
+        Available platforms for this endpoint are Instagram, YouTube, and TikTok. Note that the depth for these platform reports depends on the platform. Instagram is the only platform that returns data for both likes & followers.
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str): The platform code.
+            date (str): The date for the audience reports (format 'YYYY-MM-DD').
+
+        Returns:
+            dict: The audience report for the artist on the specified platform by date.
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/audience/{platform}/report/{date}"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        return response
+
+    def artist_short_videos(
+        self, uuid: str, platform: str = "instagram"
+    ) -> list[ShortVideo]:
+        """
+        Get an artist’s short videos, and the current audience of each video (comments/likes/views).
+
+        This endpoint is available for YouTube shorts and Instagram reels.
+
+        Args:
+            uuid (str): The UUID of the artist.
+            platform (str): The platform code. Options include "instagram", "youtube".
+
+        Returns:
+
+        """
+        endpoint = f"/api/v2/artist/{uuid}/shorts/{platform}/videos"
+        response: dict = self._make_api_get_request(append_to_base_url=endpoint)
+        items = response.get("items")
+        short_videos = [ShortVideo(**item) for item in items]
+        return short_videos
+
+    def artist_short_video_audience(
+        self, identifier: str, start_date: str = None, end_date: str = None
+    ) -> dict:
+        """
+        Get the audience data for a short video.
+
+        This endpoint is available for YouTube shorts and Instagram reels.
+
+        Args:
+            identifier (str): The identifier of the short video.
+            start_date (str): The start date for the audience data (format 'YYYY-MM-DD').
+            end_date (str): The end date for the audience data (format 'YYYY-MM-DD').
+
+        Returns:
+
+        """
+        endpoint = f"/api/v2/artist/shorts/{identifier}/audience"
+        endpoint = check_and_add_start_and_end_date_to_query_params(
+            endpoint, start_date, end_date
+        )
         response: dict = self._make_api_get_request(append_to_base_url=endpoint)
         return response

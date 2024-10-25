@@ -154,3 +154,28 @@ class TestArtistMethods(unittest.TestCase):
             uuid=self.demo_artist_uuid,
         )
         assert popularity is not None, "Failed to get artist popularity"
+
+    def test_get_artist_audience_report_latest(self):
+        report = self.sc.artist_audience_report_latest(
+            uuid=self.demo_artist_uuid,
+        )
+        assert report is not None, "Failed to get artist audience report latest"
+
+    def test_get_artist_audience_report_dates(self):
+        report = self.sc.artist_audience_report_dates(
+            uuid=self.demo_artist_uuid,
+        )
+        assert report is not None, "Failed to get artist audience report dates"
+
+    def test_get_artist_audience_report_by_date(self):
+        report = self.sc.artist_audience_report_by_date(
+            uuid=self.demo_artist_uuid,
+            date="2020-09-20",
+        )
+        assert report is not None, "Failed to get artist audience report by date"
+
+    def test_get_artist_short_videos(self):
+        short_videos = self.sc.artist_short_videos(
+            uuid=self.demo_artist_uuid,
+        )
+        assert short_videos is not None, "Failed to get artist short videos"
