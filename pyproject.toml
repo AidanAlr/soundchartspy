@@ -11,7 +11,7 @@ authors = [
     { name = "AidanAlr", email = "aidanalrawi@icloud.com" },
 ]
 description = "A python wrapper package for the paid api from SoundCharts. This package is not affiliated with soundcharts and is not endorsed by them. However, it is built upon their api and can be used assuming you have a paid subscription to their service."
-readme = "README.rst"
+readme = { file = "README.rst", content-type = "text/x-rst" }
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -27,12 +27,14 @@ dev = [
     "pytest",
     "flake8",
 ]
+
 [tool.hatch.version]
 path = "soundchartspy/__about__.py"
 
 [project.urls]
 Homepage = "https://github.com/AidanAlr/soundchartspy"
 Issues = "https://github.com/AidanAlr/soundchartspy/issues"
+
 [tool.hatch.build.targets.wheel]
 exclude = [
     ".venv",

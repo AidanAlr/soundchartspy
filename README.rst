@@ -68,10 +68,10 @@ Here's an example of how to use `soundchartspy`:
     print("Albums: {}".format(albums))
 
 API Implementation Status
-======================
+==========================
 
 ✅ Completed Methods
-------------------
+--------------------
 * Song Methods
     * ``SoundCharts.song()``
     * ``SoundCharts.song_by_isrc()``
@@ -107,9 +107,8 @@ API Implementation Status
     * ``SoundCharts.artist_short_video_audience()``
 
 
-
 📋 Pending Implementation
------------------------
+-------------------------
 * Remaining Artist Methods
 * Chart Methods
 * Playlist Methods
@@ -120,7 +119,7 @@ API Implementation Status
 * User Methods
 
 Development Notes
----------------
+-----------------
 * All implemented methods follow the official SoundCharts API specification
 * Unit tests available for implemented methods
 
