@@ -56,7 +56,7 @@ Here's an example of how to use `soundchartspy`:
     sc = SoundCharts(api_key='your_api_key', app_id='your_app_id')
 
     # Get the song by UUID
-    song: Song = sc.song(song_uuid='7d534228-5165-11e9-9375-549f35161576')
+    song: Song = sc.song(uuid='7d534228-5165-11e9-9375-549f35161576')
     print("Song Name: {}, Artists: {}".format(song.name, song.artists))
 
     # Get the song audience on Spotify
